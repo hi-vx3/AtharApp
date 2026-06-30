@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { apiClient } from './apiClient';
+import { checkCollaboratorStatus, joinRepository } from '../services/githubService';
 import { useAuth } from './AuthContext';
 
 export const GitHubRepoContext = createContext(null);
@@ -19,7 +19,7 @@ export const GitHubRepoProvider = ({ children }) => {
 
     const checkStatus = async () => {
       try {
-        const response = await apiClient('/github/check-collaborator');
+        const response = await checkCollaboratorStatus();
         if (isMounted) {
           if (response.repoUrl) {
             setRepoUrl(response.repoUrl);
@@ -41,7 +41,7 @@ export const GitHubRepoProvider = ({ children }) => {
     setJoinStatus(null);
     
     try {
-      const response = await apiClient('/github/join', { method: 'POST' });
+      const response = await joinRepository();
       setIsContributor(true);
       if (response.repoUrl) {
         setRepoUrl(response.repoUrl);

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useCallback, useEffect, useRef, useContext } from 'react';
-import { apiClient } from './apiClient';
+import { authenticateGitHub } from '../services/authService';
 import { useAuth } from './AuthContext';
 import { openCenteredPopup } from '../utils/popupManager';
 import ENV from '../config/env';
@@ -25,17 +25,37 @@ const translateAuthError = (key, message) => {
 
 // --- CSRF Utils ---
 const generateState = () => {
-  const state = Math.random().toString(36).substring(2, 15);
-  sessionStorage.setItem('github_oauth_state', state);
-  return state;
+  const csrfToken = Math.random().toString(36).substring(2, 15);
+  sessionStorage.setItem('github_oauth_csrf', csrfToken);
+  
+  // دمج الرمز العشوائي مع رابط الفرونت اند الحالي
+  const stateObj = {
+    csrf: csrfToken,
+    origin: window.location.origin
+  };
+  
+  // تشفير الكائن ليصبح آمناً في الرابط
+  return btoa(JSON.stringify(stateObj));
 };
 
 const validateState = (receivedState) => {
-  const storedState = sessionStorage.getItem('github_oauth_state');
-  sessionStorage.removeItem('github_oauth_state'); // Clean up immediately
+  const storedCsrf = sessionStorage.getItem('github_oauth_csrf');
+  sessionStorage.removeItem('github_oauth_csrf'); // Clean up immediately
   
-  if (!receivedState || receivedState !== storedState) {
-    throw new Error(translateAuthError('CSRF_VIOLATION', 'State mismatch. Possible CSRF attack.'));
+  if (!receivedState || !storedCsrf) {
+    throw new Error(translateAuthError('CSRF_VIOLATION', 'State or CSRF token missing.'));
+  }
+
+  try {
+    // فك التشفير واستخراج الرمز العشوائي
+    const decodedStateStr = atob(receivedState);
+    const stateObj = JSON.parse(decodedStateStr);
+    
+    if (stateObj.csrf !== storedCsrf) {
+      throw new Error('CSRF token mismatch.');
+    }
+  } catch (error) {
+    throw new Error(translateAuthError('CSRF_VIOLATION', 'Invalid state format or CSRF mismatch.'));
   }
 };
 
@@ -66,11 +86,13 @@ export const GitHubAuthProvider = ({ children }) => {
     
     const url = 'https://github.com/login/oauth/authorize';
     const clientId = ENV.GITHUB_CLIENT_ID;
-    const redirectUri = `${window.location.origin}/auth/callback`;
+    
+    // توجيه GitHub للعودة إلى مسار الباك اند الذي يعمل كـ Proxy آمن
+    const redirectUri = `${ENV.API_BASE_URL}/auth/github/callback`;
     const scope = 'read:user user:email';
     const popup = { width: 600, height: 700, title: 'GitHub Login' };
 
-    const fullUrl = `${url}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&state=${state}`;
+    const fullUrl = `${url}?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}`;
     popupRef.current = openCenteredPopup(fullUrl, popup.title, popup.width, popup.height);
   }, [isLoggingIn, isAuthenticated, isLoading]);
 
@@ -81,10 +103,7 @@ export const GitHubAuthProvider = ({ children }) => {
     try {
       validateState(receivedState);
 
-      const data = await apiClient('/auth/github', {
-        method: 'POST', 
-        body: { code: authCode }
-      });
+      const data = await authenticateGitHub({ code: authCode });
 
       setUser(data);
       setIsAuthenticated(true);
@@ -110,7 +129,7 @@ export const GitHubAuthProvider = ({ children }) => {
       } else if (type === 'GITHUB_AUTH_FAILURE') {
         console.error('GitHub Auth Error:', authError, errorDescription);
         setError(translateAuthError('GITHUB_AUTH_FAILURE', errorDescription || authError));
-        sessionStorage.removeItem('github_oauth_state');
+        sessionStorage.removeItem('github_oauth_csrf');
         closePopup();
         setIsLoggingIn(false);
       }
@@ -120,7 +139,7 @@ export const GitHubAuthProvider = ({ children }) => {
 
     const popupMonitor = setInterval(() => {
       if (isLoggingIn && popupRef.current?.closed) {
-        sessionStorage.removeItem('github_oauth_state');
+        sessionStorage.removeItem('github_oauth_csrf');
         setIsLoggingIn(false); 
         clearInterval(popupMonitor);
       }

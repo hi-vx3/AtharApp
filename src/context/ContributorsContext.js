@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { apiClient } from './apiClient';
+import { getContributors } from '../services/githubService';
 
 export const ContributorsContext = createContext(null);
 
@@ -13,7 +13,7 @@ export const ContributorsProvider = ({ children }) => {
             setIsLoading(true);
             try {
                 // نستخدم الواجهة الخلفية لجلب البيانات باستخدام GitHub App
-                const data = await apiClient('/github/contributors');
+                const data = await getContributors();
                 setContributors(data);
             } catch (err) {
                 setError(err.message || "فشل جلب البيانات");

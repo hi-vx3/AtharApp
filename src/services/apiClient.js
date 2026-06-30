@@ -1,4 +1,4 @@
-import ENV from '../config/env';
+import ENV from "../config/env";
 
 const API_BASE = ENV.API_BASE_URL;
 
@@ -12,14 +12,17 @@ const API_BASE = ENV.API_BASE_URL;
  * @returns {Promise<any>} - Promise يرجع بيانات الـ JSON عند النجاح.
  * @throws {Error} - يرمي خطأ في حال فشل الطلب أو إرجاع الخادم لخطأ.
  */
-export const apiClient = async (endpoint, { method = 'GET', body = null, headers = {} } = {}) => {
+export const apiClient = async (
+  endpoint,
+  { method = "GET", body = null, headers = {} } = {},
+) => {
   const config = {
     method,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...headers,
     },
-    credentials: 'include', // ضمان إرسال الكوكيز مع الطلب لدعم الجلسات
+    credentials: "include", // ضمان إرسال الكوكيز مع الطلب لدعم الجلسات
   };
 
   if (body) {
@@ -32,10 +35,20 @@ export const apiClient = async (endpoint, { method = 'GET', body = null, headers
 
   if (!response.ok) {
     // يرمي خطأ يحتوي على البيانات القادمة من الخادم لتسهيل الترجمة والمعالجة
-    const error = new Error(data.message || 'An error occurred with the API request.');
+    const error = new Error(
+      data.message || "An error occurred with the API request.",
+    );
     error.data = data; // إرفاق بيانات الخطأ الكاملة
     throw error;
   }
 
   return data;
+};
+
+export const api = {
+  get: (endpoint, headers) => apiClient(endpoint, { method: 'GET', headers }),
+  post: (endpoint, body, headers) => apiClient(endpoint, { method: 'POST', body, headers }),
+  patch: (endpoint, body, headers) => apiClient(endpoint, { method: 'PATCH', body, headers }),
+  put: (endpoint, body, headers) => apiClient(endpoint, { method: 'PUT', body, headers }),
+  delete: (endpoint, body, headers) => apiClient(endpoint, { method: 'DELETE', body, headers }),
 };

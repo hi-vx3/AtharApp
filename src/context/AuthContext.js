@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback, useContext } from 'react';
-import { apiClient } from './apiClient';
+import { checkAuthStatus as apiCheckAuthStatus, logoutUser } from '../services/authService';
 
 const AuthContext = createContext(null);
 
@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     const checkAuthStatus = async () => {
       setIsLoading(true);
       try {
-        const data = await apiClient('/auth/status');
+        const data = await apiCheckAuthStatus();
         if (data.isAuthenticated) {
           setUser(data.user);
           setIsAuthenticated(true);
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   // دالة تسجيل الخروج
   const logout = useCallback(async () => {
     try {
-      await apiClient('/auth/logout', { method: 'POST' });
+      await logoutUser();
     } catch (err) {
       console.error("فشل في تسجيل الخروج من الخادم:", err);
     } finally {
