@@ -87,12 +87,12 @@ export const GitHubAuthProvider = ({ children }) => {
     const url = 'https://github.com/login/oauth/authorize';
     const clientId = ENV.GITHUB_CLIENT_ID;
     
-    // توجيه GitHub للعودة إلى مسار الباك اند الذي يعمل كـ Proxy آمن
-    const redirectUri = `${ENV.API_BASE_URL}/auth/github/callback`;
+    // تم إزالة redirect_uri من هنا لكي يعتمد GitHub دائماً على الرابط الأساسي المسجل في إعدادات التطبيق
+    // وهذا ما يتيح لنا استخدام نفس التطبيق لجميع البيئات (Local و Production)
     const scope = 'read:user user:email';
     const popup = { width: 600, height: 700, title: 'GitHub Login' };
 
-    const fullUrl = `${url}?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${state}`;
+    const fullUrl = `${url}?client_id=${clientId}&scope=${scope}&state=${state}`;
     popupRef.current = openCenteredPopup(fullUrl, popup.title, popup.width, popup.height);
   }, [isLoggingIn, isAuthenticated, isLoading]);
 
