@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مجتمع أثر - الرحلة البرمجية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/thmanyah-fonts.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Thmanyah Sans', 'Cairo', 'sans-serif'],
+                        serif: ['Thmanyah Serif Text', 'serif'],
+                        display: ['Thmanyah Serif Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Thmanyah Sans', 'Cairo', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Thmanyah Serif Display', 'Cairo', sans-serif;
+        }
+        @keyframes tourFadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        @keyframes tourSlideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to   { transform: translateY(0); opacity: 1; }
+        }
+        .animate-fade-in {
+            animation: tourFadeIn 0.4s ease-out forwards;
+        }
+        .animate-slide-up {
+            animation: tourSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-black text-slate-200 p-5 md:p-12 font-sans relative overflow-x-hidden">
+
+    <!-- ── Welcome Tour Overlay ── -->
+    <div id="tour-welcome-overlay" class="fixed inset-0 z-[9999] flex items-center justify-center animate-fade-in">
+        <!-- Blurred backdrop -->
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-[28px] saturate-[120%]" onclick="closeTour()"></div>
+
+        <!-- Welcome card -->
+        <div class="relative z-10 w-[92vw] max-w-md text-center animate-slide-up">
+            <!-- Close button -->
+            <button onclick="closeTour()" class="absolute -top-3 -left-3 w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700 transition-all z-20 shadow-lg">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+
+            <div class="rounded-3xl overflow-hidden border border-slate-700/60 p-10 md:p-12 bg-gradient-to-br from-slate-900/95 to-slate-800/95 shadow-[0_25px_60px_rgba(0,0,0,0.5),0_0_80px_rgba(59,130,246,0.08)]">
+                <!-- Icon -->
+                <div class="w-20 h-20 rounded-[1.5rem] bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mx-auto mb-6">
+                    <i class="fa-solid fa-map-signs text-blue-400 text-3xl"></i>
+                </div>
+
+                <h2 class="text-white font-black text-2xl md:text-3xl mb-3">
+                    مرحبًا بك في <span class="text-blue-400">أثر</span>
+                </h2>
+
+                <p class="text-slate-400 text-sm md:text-[15px] leading-relaxed mb-8 max-w-xs mx-auto">
+                    خذ جولة سريعة تعرّفك على المجتمع وكيف تبدأ مشوارك البرمجي معنا.
+                </p>
+
+                <button onclick="startTour()" class="inline-flex items-center justify-center gap-3 px-10 py-4 bg-gradient-to-l from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-2xl text-base font-black transition-all shadow-lg shadow-blue-500/25 transform hover:-translate-y-0.5 active:translate-y-0">
+                    <i class="fa-solid fa-play text-sm"></i>
+                    ابدأ الجولة التعريفية
+                </button>
+
+                <button onclick="closeTour()" class="block mx-auto mt-4 text-slate-500 hover:text-slate-300 text-sm transition-colors">
+                    تخطي
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Interactive Step Highlight Overlay (Active Tour) ── -->
+    <div id="tour-active-overlay" class="fixed inset-0 z-[9998] hidden">
+        <!-- SVG mask for spotlight -->
+        <svg class="absolute inset-0 w-full h-full pointer-events-none">
+            <defs>
+                <mask id="spotlight-mask">
+                    <rect width="100%" height="100%" fill="white" />
+                    <!-- Spotlight cutout, dynamically resized by JS -->
+                    <rect id="spotlight-cutout" x="0" y="0" width="0" height="0" rx="20" fill="black" />
+                </mask>
+            </defs>
+            <rect width="100%" height="100%" fill="rgba(0, 0, 0, 0.75)" mask="url(#spotlight-mask)" />
+        </svg>
+
+        <!-- Tooltip box -->
+        <div id="tour-tooltip" class="absolute z-10 w-[90vw] max-w-sm bg-slate-900 border border-slate-700/60 p-6 rounded-2xl shadow-2xl transition-all duration-300 text-right">
+            <span id="tooltip-label" class="text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full mb-2 inline-block">الخطوة 1</span>
+            <h3 id="tooltip-title" class="text-white font-bold text-base mb-2">رسالة المدير</h3>
+            <p id="tooltip-body" class="text-slate-300 text-xs leading-relaxed mb-4">وصف الخطوة</p>
+            
+            <div id="tooltip-qr-container" class="hidden flex flex-col items-center mb-4">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https%3A%2F%2Fchat.whatsapp.com%2FDTHIWmxV5CQ0V0GtbmlCsw" class="w-28 h-28 border-4 border-white rounded-lg mb-2" />
+                <button onclick="simulateJoin()" id="btn-simulate-join" class="text-[10px] bg-green-600 hover:bg-green-500 text-white font-bold px-3 py-1 rounded-full transition-all">محاكاة الانضمام</button>
+            </div>
+
+            <div class="flex justify-between items-center border-t border-slate-800 pt-3">
+                <button onclick="closeTour()" class="text-xs text-slate-500 hover:text-slate-300">إنهاء</button>
+                <button id="tooltip-btn-next" onclick="nextStep()" class="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all">
+                    <span>التالي</span>
+                    <i class="fa-solid fa-arrow-left text-[9px]"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="max-w-6xl mx-auto">
+        <!-- ── Navigation Back ── -->
+        <a href="developer-resources.html" class="mb-8 inline-flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors group">
+            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            <span>العودة لمركز الموارد</span>
+        </a>
+
+        <!-- ── Hero ── -->
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl md:text-6xl font-black text-white mb-3 tracking-tight">
+                مجتمع <span class="text-blue-500">أثر</span>
+            </h1>
+            <p class="text-slate-400 text-lg max-w-xl mx-auto mb-6">
+                بيئة تطوير تفاعلية — ابنِ مهاراتك من خلال المساهمة في مشاريع حقيقية.
+            </p>
+
+            <!-- Success banner after finishing tour -->
+            <div id="finished-banner" class="hidden inline-flex items-center gap-3 px-6 py-3 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-emerald-400 text-sm font-bold animate-fade-in">
+                <i class="fa-solid fa-check"></i>
+                أهلاً بك في المجتمع! الآن انطلق في رحلتك البرمجية 🚀
+            </div>
+        </header>
+
+        <!-- ── Bento Grid ── -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-5">
+
+            <!-- رسالة المدير التنفيذي -->
+            <div id="tour-msg-card" class="lg:col-span-7 relative bg-gradient-to-br from-slate-900 to-slate-900/40 border border-slate-800 rounded-[2rem] p-7 md:p-9 overflow-hidden">
+                <i class="fa-solid fa-quote-right absolute -top-2 left-6 text-slate-800 text-7xl opacity-30"></i>
+                <div class="relative">
+                    <div class="flex items-center gap-2 mb-5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        <span class="text-xs font-bold tracking-widest text-emerald-400 uppercase">
+                            رسالة من المدير التنفيذي
+                        </span>
+                    </div>
+                    <p class="text-slate-200 leading-loose text-[15px] md:text-base mb-5">
+                        أحب أوضح نقطة مهمة بخصوص هذا القسم: أي قرار أو اقتراح أو تعديل تشوفونه هنا في
+                        التصميم أو الفكرة، هو من باب الاحترام الكامل لآرائكم وقراراتكم، ومافيه أي إلزام
+                        من جهتنا.
+                        <br />
+                        <br />
+                        الهدف الأساسي هو <span class="text-white font-semibold">تبادل الخبرات</span> بينكم، وفتح مجال
+                        للتجربة والتعلم العملي، بحيث يساهم كل واحد منكم بأفكاره وأسلوبه، ونستفيد
+                        جميعًا من تنوع وجهات النظر — وهذا يصب في صالح تأهيلكم بشكل أفضل لسوق العمل.
+                    </p>
+                    <div class="flex items-center justify-between border-t border-slate-800 pt-4">
+                        <span class="text-slate-500 text-sm">— المدير التنفيذي</span>
+                        <i class="fa-solid fa-stamp text-slate-700 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- خارطة طريق المجتمع -->
+            <div id="tour-road-card" class="lg:col-span-5 bg-gradient-to-br from-blue-950 via-slate-900 to-indigo-950 border border-blue-500/30 rounded-[2rem] p-7 md:p-9 flex flex-col justify-center text-center relative overflow-hidden group shadow-xl">
+                <div class="absolute -left-10 -top-10 w-24 h-24 bg-blue-500/10 blur-2xl rounded-full group-hover:scale-125 transition-transform duration-700"></div>
+                <i class="fa-solid fa-rocket text-blue-400 text-3xl mb-4 mx-auto"></i>
+                <h3 class="text-xl md:text-2xl font-black text-white mb-2">
+                    خارطة طريق المجتمع التقني
+                </h3>
+                <p class="text-slate-300 text-sm mb-6 leading-relaxed">
+                    دليلك البرمجي المتكامل للتأهيل العملي. تتبع خطوات التأسيس، إعداد بيئة العمل، والمساهمة في المشاريع الفعلية خطوة بخطوة.
+                </p>
+                <a href="doc-viewer.html" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-gradient-to-l from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-full font-black text-sm transition-all shadow-lg shadow-blue-500/20 transform hover:-translate-y-0.5">
+                    ابدأ رحلتك البرمجية الآن
+                </a>
+
+                <div id="roadmap-hint" class="hidden mt-4 px-4 py-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-300 text-xs leading-relaxed text-right animate-fade-in">
+                    <span class="font-bold text-blue-400">خارطة الطريق تشمل: </span>
+                    إعداد بيئة العمل ← المهام الأولى ← أول Pull Request ← الصعود في لوحة المساهمين
+                </div>
+            </div>
+
+            <!-- خطوات العمل -->
+            <div class="lg:col-span-4 bg-slate-900/50 border border-slate-800 rounded-3xl p-6 hover:border-slate-600 transition-all">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-blue-500/10 text-blue-400">
+                    <i class="fa-solid fa-comments text-xl"></i>
+                </div>
+                <h4 class="font-bold text-white text-lg mb-1">انضم وتواصل</h4>
+                <p class="text-slate-400 text-sm leading-relaxed">ادخل مجموعة الواتساب وتعرّف على المطورين وآخر المهام المتاحة.</p>
+            </div>
+
+            <div class="lg:col-span-4 bg-slate-900/50 border border-slate-800 rounded-3xl p-6 hover:border-slate-600 transition-all">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-purple-500/10 text-purple-400">
+                    <i class="fa-solid fa-code text-xl"></i>
+                </div>
+                <h4 class="font-bold text-white text-lg mb-1">ساهم بالكود</h4>
+                <p class="text-slate-400 text-sm leading-relaxed">اختر مهمة تناسبك، نفّذها، وأرسل مساهمتك (Pull Request) للمراجعة.</p>
+            </div>
+
+            <div class="lg:col-span-4 bg-slate-900/50 border border-slate-800 rounded-3xl p-6 hover:border-slate-600 transition-all">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-yellow-500/10 text-yellow-400">
+                    <i class="fa-solid fa-star text-xl"></i>
+                </div>
+                <h4 class="font-bold text-white text-lg mb-1">اصعد في الترتيب</h4>
+                <p class="text-slate-400 text-sm leading-relaxed">كل مساهمة تُحتسب تلقائيًا وتظهر نسبتك في لوحة المساهمين.</p>
+            </div>
+
+            <!-- QR Card -->
+            <div id="tour-qr-card" class="lg:col-span-4 bg-white rounded-3xl p-6 flex flex-col items-center justify-center text-center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https%3A%2F%2Fchat.whatsapp.com%2FDTHIWmxV5CQ0V0GtbmlCsw" alt="QR Code لمجموعة واتساب" class="w-36 h-36 mb-4" />
+                <p class="text-slate-800 text-sm font-bold mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-qrcode text-slate-500"></i>
+                    امسح للانضمام مباشرة
+                </p>
+                <a href="https://chat.whatsapp.com/DTHIWmxV5CQ0V0GtbmlCsw" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white rounded-full font-bold text-sm transition-all">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    انضم عبر واتساب
+                </a>
+            </div>
+
+            <!-- لوحة المساهمين -->
+            <div class="lg:col-span-8 bg-slate-900/50 border border-slate-800 rounded-3xl p-7">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="font-bold text-2xl text-white flex items-center gap-2">
+                            <i class="fa-solid fa-star text-yellow-400"></i>
+                            أبرز المساهمين
+                        </h3>
+                        <p class="text-slate-500 text-sm mt-1">
+                            النشطاء الذين يبنون مستقبل المنصة
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-3" id="contributors-container">
+                    <!-- Static load with GitHub contributors list -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Cards Experiment -->
+        <section class="mt-16 pt-12 border-t border-slate-900/50">
+            <header class="text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-black text-white mb-3 tracking-tight">
+                    Experiment with the latest models
+                </h2>
+                <p class="text-slate-400 text-base max-w-xl mx-auto">
+                    استكشف أحدث النماذج والتقنيات التي نستخدمها لبناء وتطوير منصة أثر.
+                </p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- React model card -->
+                <div class="bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 hover:border-slate-700 transition-all flex flex-col items-center text-center">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-blue-900/40 text-blue-400">
+                        <i class="fa-brands fa-react text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg mb-2">Gemini 3</h3>
+                    <p class="text-slate-400 text-sm">State-of-the-art reasoning</p>
+                </div>
+                <!-- Nodejs model card -->
+                <div class="bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 hover:border-slate-700 transition-all flex flex-col items-center text-center">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-green-950/40 text-green-400">
+                        <i class="fa-brands fa-node-js text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg mb-2">Gemini Flash Live</h3>
+                    <p class="text-slate-400 text-sm">Realtime voice and video interactions</p>
+                </div>
+                <!-- Rocket model card -->
+                <div class="bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 hover:border-slate-700 transition-all flex flex-col items-center text-center">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-amber-950/40 text-amber-500">
+                        <i class="fa-solid fa-rocket text-2xl"></i>
+                    </div>
+                    <h3 class="text-white font-bold text-lg mb-2">Lyria</h3>
+                    <p class="text-slate-400 text-sm">Professional-grade music generation</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const TOUR_STEPS = [
+            {
+                targetId: "tour-msg-card",
+                title: "رسالة المدير التنفيذي",
+                body: "اقرأ رسالة الإدارة أولاً — ستفهم روح المجتمع وأهدافه. لا يوجد إلزام، الهدف الأساسي هو التعلم المشترك.",
+                label: "الخطوة 1 من 3"
+            },
+            {
+                targetId: "tour-qr-card",
+                title: "انضم عبر واتساب",
+                body: "امسح الباركود بكاميرتك أو اضغط زر الانضمام للدخول مباشرة إلى مجموعة المطورين.",
+                label: "الخطوة 2 من 3",
+                isQr: true
+            },
+            {
+                targetId: "tour-road-card",
+                title: "ابدأ رحلتك البرمجية",
+                body: "الآن بعد أن انضممت، اضغط على الزر لترى خارطة الطريق الكاملة: إعداد البيئة ← أول مهمة ← أول Pull Request.",
+                label: "الخطوة 3 من 3",
+                isLast: true
+            }
+        ];
+
+        const CONTRIBUTORS = [
+            { id: 1, login: "saad-mohammed", avatar_url: "https://api.dicebear.com/7.x/bottts/svg?seed=saad", percentage: 48 },
+            { id: 2, login: "ahmed-dev", avatar_url: "https://api.dicebear.com/7.x/bottts/svg?seed=ahmed", percentage: 32 },
+            { id: 3, login: "layla-h", avatar_url: "https://api.dicebear.com/7.x/bottts/svg?seed=layla", percentage: 20 }
+        ];
+
+        let currentStep = 0;
+        let touring = false;
+
+        function closeTour() {
+            document.getElementById('tour-welcome-overlay').classList.add('hidden');
+            document.getElementById('tour-active-overlay').classList.add('hidden');
+            document.body.style.overflow = '';
+            touring = false;
+        }
+
+        function startTour() {
+            document.getElementById('tour-welcome-overlay').classList.add('hidden');
+            document.getElementById('tour-active-overlay').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            touring = true;
+            currentStep = 0;
+            updateSpotlight();
+        }
+
+        function nextStep() {
+            if (currentStep < TOUR_STEPS.length - 1) {
+                currentStep++;
+                updateSpotlight();
+            } else {
+                // Done
+                closeTour();
+                document.getElementById('finished-banner').classList.remove('hidden');
+                document.getElementById('roadmap-hint').classList.remove('hidden');
+            }
+        }
+
+        function updateSpotlight() {
+            const step = TOUR_STEPS[currentStep];
+            const targetEl = document.getElementById(step.targetId);
+            if (!targetEl) return;
+
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            setTimeout(() => {
+                const rect = targetEl.getBoundingClientRect();
+                const cutout = document.getElementById('spotlight-cutout');
+                
+                // Set spotlight mask coordinates with padding
+                const pad = 10;
+                cutout.setAttribute('x', rect.left - pad);
+                cutout.setAttribute('y', (rect.top + window.scrollY) - pad);
+                cutout.setAttribute('width', rect.width + (pad * 2));
+                cutout.setAttribute('height', rect.height + (pad * 2));
+
+                // Position tooltip
+                const tooltip = document.getElementById('tour-tooltip');
+                document.getElementById('tooltip-label').innerText = step.label;
+                document.getElementById('tooltip-title').innerText = step.title;
+                document.getElementById('tooltip-body').innerText = step.body;
+
+                if (step.isQr) {
+                    document.getElementById('tooltip-qr-container').classList.remove('hidden');
+                } else {
+                    document.getElementById('tooltip-qr-container').classList.add('hidden');
+                }
+
+                if (step.isLast) {
+                    document.getElementById('tooltip-btn-next').querySelector('span').innerText = 'إنهاء الجولة';
+                } else {
+                    document.getElementById('tooltip-btn-next').querySelector('span').innerText = 'التالي';
+                }
+
+                // Place tooltip near the target
+                const tooltipTop = rect.bottom + window.scrollY + 20;
+                const tooltipLeft = Math.max(20, Math.min(window.innerWidth - 380, rect.left + (rect.width/2) - 180));
+                
+                tooltip.style.top = `${tooltipTop}px`;
+                tooltip.style.left = `${tooltipLeft}px`;
+            }, 300);
+        }
+
+        function simulateJoin() {
+            const btn = document.getElementById('btn-simulate-join');
+            btn.className = "text-[10px] bg-emerald-600 text-white font-bold px-3 py-1 rounded-full";
+            btn.innerText = "تم الانضمام بنجاح 🟢";
+            setTimeout(() => {
+                nextStep();
+            }, 1000);
+        }
+
+        // Render Contributors list
+        const contContainer = document.getElementById('contributors-container');
+        contContainer.innerHTML = CONTRIBUTORS.map(user => `
+            <div class="flex items-center justify-between p-3.5 bg-slate-800/50 rounded-2xl border border-slate-700 hover:border-slate-500 transition-all">
+                <div class="flex items-center gap-3">
+                    <img src="${user.avatar_url}" class="w-10 h-10 rounded-full border-2 border-slate-700" alt="${user.login}" />
+                    <span class="font-bold">${user.login}</span>
+                </div>
+                <span class="text-yellow-500 font-bold bg-yellow-500/10 px-4 py-1 rounded-full text-sm">
+                    ${user.percentage}%
+                </span>
+            </div>
+        `).join('');
+
+        window.addEventListener('resize', () => {
+            if (touring) updateSpotlight();
+        });
+
+        // Initialize Lenis for smooth scrolling
+        const lenis = new Lenis();
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+    </script>
+</body>
+</html>

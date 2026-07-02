@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل المطورين وتوزيع المهام - أثر</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/thmanyah-fonts.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Thmanyah Sans', 'Cairo', 'sans-serif'],
+                        serif: ['Thmanyah Serif Text', 'serif'],
+                        display: ['Thmanyah Serif Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Thmanyah Sans', 'Cairo', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Thmanyah Serif Display', 'Cairo', sans-serif;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[#070b13] text-slate-200 font-sans p-6 md:p-12 relative overflow-hidden">
+    <!-- Ambient background glows -->
+    <div class="absolute top-[-10%] left-[10%] w-[600px] h-[600px] bg-blue-600/10 blur-[130px] rounded-full pointer-events-none animate-pulse"></div>
+    <div class="absolute bottom-[10%] right-[5%] w-[500px] h-[500px] bg-purple-600/8 blur-[120px] rounded-full pointer-events-none"></div>
+
+    <!-- Subtle grid overlay -->
+    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.005)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.005)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
+
+    <div class="max-w-5xl mx-auto relative z-10">
+        <!-- Navigation Back -->
+        <a href="developer-resources.html" class="mb-10 inline-flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors group">
+            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            <span class="text-sm font-semibold border-b border-transparent group-hover:border-blue-500/30">العودة للموارد</span>
+        </a>
+
+        <!-- Tab Switcher -->
+        <div class="flex justify-center gap-4 mb-12 bg-slate-950/60 p-1.5 rounded-2xl border border-slate-900/80 max-w-md mx-auto backdrop-blur-md shadow-lg">
+            <button
+                id="btn-available"
+                onclick="switchTab('available')"
+                class="flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold transition-all duration-300 w-1/2 justify-center bg-blue-600 text-white shadow-lg shadow-blue-500/20"
+            >
+                <i class="fa-solid fa-user-check"></i>
+                <span>المبرمجين المتاحين</span>
+            </button>
+            <button
+                id="btn-tasks"
+                onclick="switchTab('tasks')"
+                class="flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold transition-all duration-300 w-1/2 justify-center text-slate-400 hover:text-white"
+            >
+                <i class="fa-solid fa-tasks"></i>
+                <span>المهام والمسؤوليات</span>
+            </button>
+        </div>
+
+        <!-- Content Viewer Panel -->
+        <div class="bg-slate-950/20 border border-slate-900/60 rounded-[2.5rem] p-8 md:p-12 shadow-2xl backdrop-blur-md relative overflow-hidden min-h-[400px]">
+            <!-- Tab 1: Available Programmers -->
+            <div id="tab-available-content">
+                <div class="flex items-center justify-between mb-8 border-b border-slate-900 pb-4">
+                    <h1 class="text-2xl md:text-4xl font-black text-white">سجل المطورين المتاحين للعمل</h1>
+                    <span class="text-xs text-slate-500 font-semibold font-mono" id="available-count">(3 مبرمجين متاحين)</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="available-list-container">
+                    <!-- Loaded dynamically via JS with mock data -->
+                </div>
+            </div>
+
+            <!-- Tab 2: Developers and Tasks -->
+            <div id="tab-tasks-content" class="hidden">
+                <div class="flex items-center justify-between mb-8 border-b border-slate-900 pb-4">
+                    <h1 class="text-2xl md:text-4xl font-black text-white">سجل المطورين وتوزيع المهام</h1>
+                    <span class="text-xs text-slate-500 font-semibold font-mono">تحديث فوري للمهام</span>
+                </div>
+
+                <div class="space-y-6 mb-12" id="tasks-list-container">
+                    <!-- Loaded dynamically via JS with mock data -->
+                </div>
+
+                <!-- Vacant / Suggested Tasks section -->
+                <div class="border-t border-slate-900 pt-8">
+                    <h2 class="text-xl font-black text-purple-400 mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-cogs text-purple-500"></i>
+                        <span>الفرص والمهام الشاغرة المقترحة</span>
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="vacant-tasks-container">
+                        <!-- Loaded dynamically via JS with mock data -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const DEVELOPER_METADATA = {
+            "سعد محمد": {
+                id: 1,
+                track: "Full-Stack Developer",
+                level: "رئيس قسم التطوير",
+                avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=saad",
+                skills: ["React.js", "Node.js", "Express", "PostgreSQL"],
+                tasks: [
+                    { name: "تصميم وتطوير الموجهات الفرعية (Sub-routing)", status: "Completed", desc: "عزل مسارات الموارد والصفحات محلياً لزيادة مديولية الكود." },
+                    { name: "ربط قواعد البيانات للوحة التحكم", status: "In Progress", desc: "إعداد الجداول ونقاط الاتصال بالـ API." }
+                ],
+                availability: "🟢 متاح بالكامل للمشاريع والمهام الكبرى",
+                gitLink: "https://github.com/hi-vx3",
+                message: "متحمس جداً لبناء بيئة تطوير قوية وسهلة لكل مطوري مجتمع أثر.",
+                available: true
+            },
+            "أحمد العلي": {
+                id: 2,
+                track: "DevOps & Cloud Systems Admin",
+                level: "مسؤول الإدارة التقنية",
+                avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=ahmed",
+                skills: ["Docker", "AWS", "CI/CD", "Linux Admin"],
+                tasks: [
+                    { name: "تأمين خوادم النشر والـ DevOps", status: "Completed", desc: "إعداد تجميع حاويات Docker والـ CI/CD." },
+                    { name: "حماية وتأمين قواعد البيانات", status: "Pending", desc: "حظر الهجمات والتأكد من أمان بيئة التشغيل." }
+                ],
+                availability: "🔴 مشغول حالياً (خوادم الإنتاج)",
+                gitLink: "https://github.com",
+                message: "تركيزي ينصب على ضمان استقرار وسلامة بيئة التشغيل والخوادم.",
+                available: true
+            },
+            "ليلى حسن": {
+                id: 3,
+                track: "Frontend Developer",
+                level: "مطور واجهات",
+                avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=layla",
+                skills: ["React", "Next.js", "Tailwind CSS", "Figma"],
+                tasks: [
+                    { name: "إعادة تصميم واجهات الموارد والخطط (UI/UX)", status: "Completed", desc: "تحويل الصفحات للأسلوب الزجاجي الحديث المتوافق مع الهوية الجديدة." }
+                ],
+                availability: "🟡 متاحة للاستشارات وتصميم المكونات الفرعية",
+                gitLink: "https://github",
+                message: "أهتم بأدق التفاصيل البصرية وتجربة المستخدم لتكون واجهاتنا مذهلة.",
+                available: true
+            }
+        };
+
+        const VACANT_TASKS = [
+            {
+                title: "بناء نظام الإشعارات الفورية (Real-time Notifications)",
+                status: "🟢 متاح للانضمام",
+                description: "تطوير ميزة إشعارات فورية ترسل تنبيهات للمطورين عند تحديث خطة التطوير أو تعيين مهام جديدة لهم.",
+                requirements: ["بناء اتصال مستمر باستخدام WebSockets أو Socket.io", "ربط التنبيهات بقاعدة بيانات MongoDB وتحديث حالتها."],
+                conditions: ["تجنب استهلاك موارد الأجهزة أو التسبب في تسريب الذاكرة (Memory Leaks) في الخلفية."]
+            },
+            {
+                title: "أتمتة وتكامل رسائل واتساب الذكية (WhatsApp Automation)",
+                status: "💡 فكرة قابلة للتطوير",
+                description: "إعداد بوت محادثة للواتساب يقوم بإعلام المشرف تلقائياً فور قيام المطور بتسليم اسمه البرمجي أو إنهاء مهمة.",
+                requirements: ["الربط مع WhatsApp Business API أو مكتبة whatsapp-web.js", "تجهيز قوالب رسائل منسقة تدعم اللغة العربية."],
+                conditions: ["تطبيق حدود معدل الإرسال (Rate Limiting) لتجنب حظر الرقم.", "إعداد سجل لتتبع وتحليل الأخطاء (Error Logs)."]
+            }
+        ];
+
+        const DEVELOPER_ROLES_JSON = [
+            { id: 1, type: "المشرف" },
+            { id: 2, type: "مشرف" }
+        ];
+
+        function switchTab(tab) {
+            const btnAvailable = document.getElementById('btn-available');
+            const btnTasks = document.getElementById('btn-tasks');
+            const contentAvailable = document.getElementById('tab-available-content');
+            const contentTasks = document.getElementById('tab-tasks-content');
+
+            if (tab === 'available') {
+                btnAvailable.className = "flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold transition-all duration-300 w-1/2 justify-center bg-blue-600 text-white shadow-lg shadow-blue-500/20";
+                btnTasks.className = "flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold transition-all duration-300 w-1/2 justify-center text-slate-400 hover:text-white";
+                contentAvailable.classList.remove('hidden');
+                contentTasks.classList.add('hidden');
+            } else {
+                btnTasks.className = "flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold transition-all duration-300 w-1/2 justify-center bg-purple-600 text-white shadow-lg shadow-purple-500/20";
+                btnAvailable.className = "flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold transition-all duration-300 w-1/2 justify-center text-slate-400 hover:text-white";
+                contentTasks.classList.remove('hidden');
+                contentAvailable.classList.add('hidden');
+            }
+        }
+
+        function init() {
+            const availableContainer = document.getElementById('available-list-container');
+            const tasksContainer = document.getElementById('tasks-list-container');
+            const vacantContainer = document.getElementById('vacant-tasks-container');
+
+            const devs = Object.keys(DEVELOPER_METADATA).map(name => ({
+                name,
+                ...DEVELOPER_METADATA[name]
+            }));
+
+            // Filter for available developers
+            const availableDevs = devs.filter(dev => dev.available);
+            document.getElementById('available-count').innerText = `(${availableDevs.length} مبرمجين متاحين)`;
+
+            availableContainer.innerHTML = availableDevs.map((dev, index) => {
+                const roleMeta = DEVELOPER_ROLES_JSON.find(item => item.id === dev.id);
+                const titleLabel = roleMeta ? roleMeta.type : "عضو";
+                const displaySkills = dev.skills || [];
+
+                return `
+                    <div class="bg-slate-950/40 border border-slate-900 hover:border-blue-500/20 rounded-3xl p-6 transition-all duration-300 relative overflow-hidden group shadow-lg flex flex-col justify-between">
+                        <div class="absolute -left-10 -top-10 w-24 h-24 bg-blue-500/5 blur-xl rounded-full pointer-events-none"></div>
+                        <div>
+                            <div class="flex items-center gap-4 mb-4">
+                                <img src="${dev.avatar}" alt="${dev.name}" class="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 p-1 group-hover:scale-105 transition-transform" />
+                                <div>
+                                    <h3 class="text-lg font-black text-white">${dev.name}</h3>
+                                    <p class="text-xs text-slate-400">عضو متاح • ${dev.track}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="text-xs text-blue-400 font-bold bg-blue-500/10 px-3 py-1.5 rounded-xl border border-blue-500/15 mb-4 inline-block">
+                                🟢 ${titleLabel}
+                            </div>
+
+                            ${dev.message ? `
+                                <div class="text-xs text-slate-400 italic bg-slate-900/40 p-3.5 rounded-2xl border border-slate-900/60 mb-4">
+                                    "${dev.message}"
+                                </div>
+                            ` : ''}
+
+                            <div class="mb-6">
+                                <h4 class="text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">إبراز:</h4>
+                                <div class="flex flex-wrap gap-1.5">
+                                    ${displaySkills.map(skill => `
+                                        <span class="text-[10px] font-bold bg-slate-900 border border-slate-800 px-2 py-0.5 rounded-lg text-slate-300">
+                                            ${skill}
+                                        </span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center border-t border-slate-900 pt-4 mt-2">
+                            <span class="text-xs font-bold text-blue-400 flex items-center gap-1">
+                                <span>الملف التقني نشط</span>
+                            </span>
+                            <a href="${dev.gitLink}" target="_blank" rel="noopener noreferrer" class="text-slate-500 hover:text-white transition-colors">
+                                <i class="fa-brands fa-github text-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Tasks Container list
+            tasksContainer.innerHTML = devs.map((dev, index) => `
+                <div class="bg-slate-950/40 border border-slate-900 rounded-3xl p-6 relative overflow-hidden">
+                    <div class="flex flex-wrap justify-between items-center mb-4 gap-2 border-b border-slate-900 pb-3">
+                        <div class="flex items-center gap-3">
+                            <img src="${dev.avatar}" alt="${dev.name}" class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 p-1" />
+                            <div>
+                                <h3 class="text-base font-black text-white">${dev.name}</h3>
+                                <p class="text-[11px] text-slate-500">عضو متاح • ${dev.track}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${dev.message ? `
+                        <div class="mb-4 p-3.5 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-xs text-blue-300">
+                            <strong>الرسالة التعبيرية:</strong> "${dev.message}"
+                        </div>
+                    ` : ''}
+
+                    <div class="space-y-3">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wide">المهام المسندة:</h4>
+                        ${dev.tasks && dev.tasks.length > 0 ? dev.tasks.map(task => `
+                            <div class="flex flex-col md:flex-row justify-between p-3.5 bg-slate-900/40 border border-slate-900 rounded-2xl gap-3">
+                                <div>
+                                    <h5 class="text-sm font-bold text-slate-200">${task.name}</h5>
+                                    <p class="text-xs text-slate-400 mt-1">${task.desc}</p>
+                                </div>
+                                <span class="text-[10px] font-bold px-2.5 py-1 rounded-lg border h-fit shrink-0 ${
+                                    task.status === 'Completed'
+                                        ? 'bg-green-500/10 border-green-500/20 text-green-400'
+                                        : task.status === 'In Progress'
+                                        ? 'bg-blue-500/10 border-blue-500/20 text-blue-400 animate-pulse'
+                                        : 'bg-slate-900 border-slate-800 text-slate-500'
+                                }">
+                                    ${task.status === 'Completed' ? 'مكتمل' : task.status === 'In Progress' ? 'جاري العمل' : 'معلق'}
+                                </span>
+                            </div>
+                        `).join('') : `
+                            <div class="p-4 bg-slate-900/20 border border-slate-900/50 rounded-2xl text-xs text-slate-500 font-bold">
+                                ⚠️ لا توجد مهام مسندة حالياً لهذا المطور (متاح لاستلام المهام الجديدة).
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `).join('');
+
+            // Vacant Tasks list
+            vacantContainer.innerHTML = VACANT_TASKS.map(task => `
+                <div class="bg-slate-950/60 border border-purple-500/10 rounded-3xl p-6 relative overflow-hidden group">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-white text-base group-hover:text-purple-400 transition-colors">${task.title}</h3>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-300">${task.status}</span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed mb-4">${task.description}</p>
+                    
+                    <div class="mb-4">
+                        <h4 class="text-[11px] font-bold text-slate-500 mb-1.5">المتطلبات الأساسية:</h4>
+                        <ul class="list-disc list-inside space-y-1 text-[11px] text-slate-300 pr-2">
+                            ${task.requirements.map(req => `<li>${req}</li>`).join('')}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 class="text-[11px] font-bold text-slate-500 mb-1.5">الشروط والضوابط:</h4>
+                        <ul class="list-disc list-inside space-y-1 text-[11px] text-slate-300 pr-2">
+                            ${task.conditions.map(cond => `<li>${cond}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        init();
+
+        // Initialize Lenis for smooth scrolling
+        const lenis = new Lenis();
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+    </script>
+</body>
+</html>

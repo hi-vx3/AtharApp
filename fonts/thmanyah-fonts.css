@@ -1,41 +1,34 @@
-/*
- * Thmanyah font family — https://font.thmanyah.com/
- * Free for personal and commercial use (see font.thmanyah.com/licenses)
- */
- @font-face {
+@font-face {
   font-family: "Thmanyah Sans";
-  src: url("https://framerusercontent.com/assets/2MgF2LENj0ar3gdEjyf3HoLd6iw.woff2") format("woff2");
+  src: url("thmanyah/sans/2MgF2LENj0ar3gdEjyf3HoLd6iw.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 300;
 }
 @font-face {
   font-family: "Thmanyah Sans";
-  src: url("https://framerusercontent.com/assets/Ej0k3h4Mi5O7TSo2w2JaDCPRgvo.woff2") format("woff2");
+  src: url("thmanyah/sans/Ej0k3h4Mi5O7TSo2w2JaDCPRgvo.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 400;
 }
-
 @font-face {
   font-family: "Thmanyah Sans";
-  src: url("https://framerusercontent.com/assets/3XGelYpTgxSxBXN4Oieg9Dt3bc.woff2") format("woff2");
+  src: url("thmanyah/sans/3XGelYpTgxSxBXN4Oieg9Dt3bc.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 500;
 }
-
 @font-face {
   font-family: "Thmanyah Sans";
-  src: url("https://framerusercontent.com/assets/JUv6rms2ye2kYL3UI3O9YyExQcQ.woff2") format("woff2");
+  src: url("thmanyah/sans/JUv6rms2ye2kYL3UI3O9YyExQcQ.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 700;
 }
-
 @font-face {
   font-family: "Thmanyah Sans";
-  src: url("https://framerusercontent.com/assets/ulQLGTktcl2Qq4AmD6RuVgELZKg.woff2") format("woff2");
+  src: url("thmanyah/sans/ulQLGTktcl2Qq4AmD6RuVgELZKg.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 900;
@@ -43,31 +36,28 @@
 
 @font-face {
   font-family: "Thmanyah Serif Display";
-  src: url("https://framerusercontent.com/assets/zmxf3YlIwMxBTz61cviQtq5n3zU.woff2") format("woff2");
+  src: url("thmanyah/serif-display/zmxf3YlIwMxBTz61cviQtq5n3zU.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 300;
 }
-
 @font-face {
   font-family: "Thmanyah Serif Display";
-  src: url("https://framerusercontent.com/assets/ahIxG21c1088n0jA0bPQBjKu6M.woff2") format("woff2");
+  src: url("thmanyah/serif-display/ahIxG21c1088n0jA0bPQBjKu6M.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 500;
 }
-
 @font-face {
   font-family: "Thmanyah Serif Display";
-  src: url("https://framerusercontent.com/assets/AAY5hsAWwWmVC7qlScZUGjzCgE8.woff2") format("woff2");
+  src: url("thmanyah/serif-display/AAY5hsAWwWmVC7qlScZUGjzCgE8.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 700;
 }
-
 @font-face {
   font-family: "Thmanyah Serif Display";
-  src: url("https://framerusercontent.com/assets/a9r2dKNoQcqFiTkwxTUnXgAfjws.woff2") format("woff2");
+  src: url("thmanyah/serif-display/a9r2dKNoQcqFiTkwxTUnXgAfjws.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 900;
@@ -75,39 +65,35 @@
 
 @font-face {
   font-family: "Thmanyah Serif Text";
-  src: url("https://framerusercontent.com/assets/3oNNmhaqdwdOlTnrXg8UrU8.woff2") format("woff2");
+  src: url("thmanyah/serif-text/3oNNmhaqdwdOlTnrXg8UrU8.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 300;
 }
-
 @font-face {
   font-family: "Thmanyah Serif Text";
-  src: url("https://framerusercontent.com/assets/pTIPpIhdyoUL1Tl7cDpv1Ze80uQ.woff2") format("woff2");
+  src: url("thmanyah/serif-text/pTIPpIhdyoUL1Tl7cDpv1Ze80uQ.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 400;
 }
-
 @font-face {
   font-family: "Thmanyah Serif Text";
-  src: url("https://framerusercontent.com/assets/oVoRwZKk5rDtzCpYG0Ol1gigl5s.woff2") format("woff2");
+  src: url("thmanyah/serif-text/oVoRwZKk5rDtzCpYG0Ol1gigl5s.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 500;
 }
-
 @font-face {
   font-family: "Thmanyah Serif Text";
-  src: url("https://framerusercontent.com/assets/kzVXDC4kJxZgS0rOVcbdPBBC5sw.woff2") format("woff2");
+  src: url("thmanyah/serif-text/kzVXDC4kJxZgS0rOVcbdPBBC5sw.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 700;
 }
-
 @font-face {
   font-family: "Thmanyah Serif Text";
-  src: url("https://framerusercontent.com/assets/e1GJ2wtz2b2fMo8i7AbRPck4Qo.woff2") format("woff2");
+  src: url("thmanyah/serif-text/e1GJ2wtz2b2fMo8i7AbRPck4Qo.woff2") format("woff2");
   font-display: swap;
   font-style: normal;
   font-weight: 900;

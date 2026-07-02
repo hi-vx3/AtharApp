@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز موارد المطورين - أثر</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/thmanyah-fonts.css">
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tabler Icons (since page uses ti ti-...) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Thmanyah Sans', 'Cairo', 'sans-serif'],
+                        serif: ['Thmanyah Serif Text', 'serif'],
+                        display: ['Thmanyah Serif Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Thmanyah Sans', 'Cairo', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Thmanyah Serif Display', 'Cairo', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-[#070b13] text-slate-100 font-sans min-h-screen relative overflow-x-hidden">
+    <div class="fixed top-[-10%] right-[5%] w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+    <div class="fixed bottom-0 left-0 w-[400px] h-[400px] bg-purple-600/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+
+    <!-- Back Button -->
+    <div class="absolute top-0 right-0 p-6 md:p-12 z-20">
+        <a href="landing.html" class="flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors group">
+            <i class="ti ti-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            <span class="text-sm font-semibold border-b border-transparent group-hover:border-blue-500/30">العودة للرئيسية</span>
+        </a>
+    </div>
+
+    <!-- Hero Section -->
+    <div id="hero-section" class="relative h-screen flex flex-col items-center justify-center text-center p-6 overflow-hidden transition-all duration-700">
+        <div class="z-10">
+            <h1 class="text-4xl md:text-6xl font-black text-white mb-4">
+                مركز موارد <span class="text-blue-400">المطورين</span>
+            </h1>
+            <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+                بوابتك للوصول إلى كل ما تحتاجه لبدء رحلتك في المساهمة والتطوير.
+            </p>
+        </div>
+        <div class="absolute bottom-10 flex flex-col items-center gap-2 text-slate-500 z-10 cursor-pointer animate-bounce" onclick="scrollToLogin()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 5V19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M19 12L12 19L5 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span class="text-xs font-semibold">اسحب للأسفل</span>
+        </div>
+    </div>
+
+    <!-- GitHub Login Section -->
+    <div id="login-section" class="py-20 px-6 bg-slate-950/20 border-y border-slate-900/60">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-right">
+            <div>
+                <h2 id="login-heading" class="text-2xl md:text-3xl font-black text-white mb-2">هل أنت مستعد للمساهمة؟</h2>
+                <p id="login-subheading" class="text-slate-400 max-w-lg">سجّل دخولك بحساب GitHub للوصول لأدوات إضافية.</p>
+            </div>
+            
+            <button id="login-btn" onclick="toggleAuth()" class="font-bold text-sm py-2 px-5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 mx-auto md:mx-0 shrink-0 w-full md:w-auto bg-white text-black hover:bg-slate-200">
+                <i class="ti ti-brand-github text-lg"></i>
+                <span id="login-btn-text">تسجيل الدخول بواسطة GitHub</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Authenticated Resources Panel -->
+    <div id="resources-panel" class="hidden max-w-4xl mx-auto px-6 py-12 sm:py-20 relative z-10">
+        <!-- Ready to Contribute -->
+        <div class="mb-10">
+            <div class="inline-flex items-center gap-2 bg-blue-600/10 text-blue-300 text-xs font-semibold tracking-wider px-3 py-1.5 rounded-full border border-blue-600/25 mb-5">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping"></span>
+                <span>مركز التطوير • الموارد الشاملة</span>
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-extrabold mb-3">أدوات وموارد <span class="text-blue-300">المطورين</span></h1>
+            <p class="text-base text-slate-400 leading-relaxed max-w-xl">بوابتك المتكاملة للوصول لأفضل بيئات التطوير، المكتبات البرمجية، وخرائط العمل التنفيذية لتسريع عجلة الإنتاج.</p>
+        </div>
+
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-blue-600/10 border border-blue-600/25 text-blue-300 text-base shrink-0"><i class="ti ti-check"></i></div>
+                <div>
+                    <div class="text-base font-bold text-slate-100">الاستعداد للمشروع</div>
+                    <div class="text-xs text-slate-500 mt-0.5">متطلبات إجبارية قبل البدء في أي مساهمة</div>
+                </div>
+            </div>
+            <div class="bg-[#0d1220] border border-white/10 rounded-xl p-6 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-center md:text-right">
+                    <h3 class="font-bold text-white mb-2">الهدف من المساهمة</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed max-w-lg">
+                        الهدف الأساسي هو تبادل الخبرات بينكم، وفتح مجال للتجربة والتعلم العملي، بحيث يساهم كل واحد منكم بأفكاره وأسلوبه، ونستفيد جميعًا من تنوع وجهات النظر — وهذا يصب في صالح تأهيلكم بشكل أفضل لسوق العمل.
+                    </p>
+                </div>
+                <div class="flex flex-col gap-3 shrink-0 w-full md:w-auto">
+                    <button onclick="simulateJoinRequest(this)" class="w-full px-6 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg bg-white text-black hover:bg-slate-200">
+                        <i class="ti ti-user-plus"></i>
+                        <span>طلب الانضمام للمساهمة</span>
+                    </button>
+                    <a href="https://desktop.github.com/" target="_blank" rel="noreferrer" class="w-full bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700/80 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center gap-2 no-underline">
+                        <i class="ti ti-download"></i>
+                        <span>تنزيل GitHub Desktop</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="h-px bg-white/5 mb-12"></div>
+
+        <!-- Editors Choice -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-blue-600/10 border border-blue-600/25 text-blue-300 text-base shrink-0"><i class="ti ti-code"></i></div>
+                <div>
+                    <div class="text-base font-bold text-slate-100">محررات الأكواد وبيئات التطوير</div>
+                    <div class="text-xs text-slate-500 mt-0.5">اختر المحرر الأنسب لك وابدأ البرمجة</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-2.5">
+                <div class="flex flex-col bg-blue-600/5 border border-blue-600/25 rounded-xl p-4 transition-colors">
+                    <div class="inline-block text-xs font-bold bg-blue-600 text-white px-2.5 py-1 rounded-lg mb-2.5 self-start">الأفضل • موصى به</div>
+                    <div class="text-sm font-bold mb-1.5">Antigravity IDE</div>
+                    <div class="text-xs text-slate-400 leading-relaxed flex-1">بيئة التطوير الذكية المدعومة بالذكاء الاصطناعي، توفر تجربة برمجية خارقة وسرعة إنتاجية لا مثيل لها.</div>
+                    <a href="https://antigravity.google/download" target="_blank" rel="noreferrer" class="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-blue-300 hover:opacity-80 transition-opacity">
+                        <i class="ti ti-download text-sm"></i> تحميل Antigravity
+                    </a>
+                </div>
+                <div class="flex flex-col bg-[#0d1220] border border-white/5 rounded-xl p-4 hover:border-white/10 transition-colors">
+                    <div class="h-6 mb-2.5"></div>
+                    <div class="text-sm font-bold mb-1.5">VS Code</div>
+                    <div class="text-xs text-slate-400 leading-relaxed flex-1">محرر الأكواد الأكثر استخداماً، قوي ومرن ويقبل التخصيص والإضافات المتنوعة.</div>
+                    <a href="https://code.visualstudio.com/download" target="_blank" rel="noreferrer" class="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-blue-300 hover:opacity-80 transition-opacity">
+                        <i class="ti ti-download text-sm"></i> تحميل VS Code
+                    </a>
+                </div>
+            </div>
+            <a href="vscode-extensions.html" class="flex items-center gap-3 bg-[#0d1220] border border-white/5 rounded-xl p-3.5 hover:border-blue-600/20 transition-colors no-underline">
+                <i class="ti ti-puzzle text-lg text-slate-500 shrink-0"></i>
+                <div class="flex-1">
+                    <div class="text-sm font-semibold text-slate-100 mb-0.5">إضافات محررات الأكواد</div>
+                    <div class="text-xs text-slate-400">أفضل الإضافات لـ Antigravity و VS Code لتحسين سرعة وجودة الكود</div>
+                </div>
+                <i class="ti ti-arrow-left text-base text-slate-500"></i>
+            </a>
+        </div>
+
+        <div class="h-px bg-white/5 mb-12"></div>
+
+        <!-- Languages & Technologies -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-blue-600/10 border border-blue-600/25 text-blue-300 text-base shrink-0"><i class="ti ti-stack-2"></i></div>
+                <div>
+                    <div class="text-base font-bold text-slate-100">التقنيات والمكتبات</div>
+                    <div class="text-xs text-slate-500 mt-0.5">قواعد البيانات — Frontend — Backend</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div class="bg-[#0d1220] border border-white/5 rounded-xl p-4">
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-3"><i class="ti ti-database text-sm"></i> قواعد البيانات</div>
+                    <div class="flex items-center justify-between py-2 border-b border-white/5"><div class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-slate-500"></span><span class="text-sm text-slate-200">MongoDB Server</span></div><a href="https://www.mongodb.com/try/download/community" target="_blank" rel="noreferrer" class="w-6 h-6 flex items-center justify-center rounded-md bg-[#111827] border border-white/5 text-slate-500 hover:border-blue-600/30 hover:text-blue-300 transition-all text-xs"><i class="ti ti-external-link"></i></a></div>
+                    <div class="flex items-center justify-between py-2 border-b border-white/5"><div class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-slate-500"></span><span class="text-sm text-slate-200">MongoDB Compass</span></div><a href="https://www.mongodb.com/products/compass" target="_blank" rel="noreferrer" class="w-6 h-6 flex items-center justify-center rounded-md bg-[#111827] border border-white/5 text-slate-500 hover:border-blue-600/30 hover:text-blue-300 transition-all text-xs"><i class="ti ti-external-link"></i></a></div>
+                    <div class="flex items-center justify-between pt-2"><div class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-slate-500"></span><span class="text-sm text-slate-200">MySQL Workbench</span></div><a href="https://www.mysql.com/products/workbench/" target="_blank" rel="noreferrer" class="w-6 h-6 flex items-center justify-center rounded-md bg-[#111827] border border-white/5 text-slate-500 hover:border-blue-600/30 hover:text-blue-300 transition-all text-xs"><i class="ti ti-external-link"></i></a></div>
+                </div>
+                <div class="bg-[#0d1220] border border-white/5 rounded-xl p-4">
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-3"><i class="ti ti-layout text-sm"></i> Frontend</div>
+                    <div class="flex items-center justify-between py-2 border-b border-white/5"><div class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-slate-500"></span><span class="text-sm text-slate-200">React Documentation</span></div><a href="https://react.dev/learn" target="_blank" rel="noreferrer" class="w-6 h-6 flex items-center justify-center rounded-md bg-[#111827] border border-white/5 text-slate-500 hover:border-blue-600/30 hover:text-blue-300 transition-all text-xs"><i class="ti ti-external-link"></i></a></div>
+                    <div class="flex items-center justify-between pt-2"><div class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-slate-500"></span><span class="text-sm text-slate-200">Tailwind CSS Docs</span></div><a href="https://tailwindcss.com/docs" target="_blank" rel="noreferrer" class="w-6 h-6 flex items-center justify-center rounded-md bg-[#111827] border border-white/5 text-slate-500 hover:border-blue-600/30 hover:text-blue-300 transition-all text-xs"><i class="ti ti-external-link"></i></a></div>
+                </div>
+                <div class="bg-[#0d1220] border border-white/5 rounded-xl p-4">
+                    <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-wider mb-3"><i class="ti ti-server text-sm"></i> Backend</div>
+                    <div class="flex items-center justify-between py-2 border-b border-white/5"><div class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-slate-500"></span><span class="text-sm text-slate-200">Node.js</span></div><a href="https://nodejs.org/en/download" target="_blank" rel="noreferrer" class="w-6 h-6 flex items-center justify-center rounded-md bg-[#111827] border border-white/5 text-slate-500 hover:border-blue-600/30 hover:text-blue-300 transition-all text-xs"><i class="ti ti-external-link"></i></a></div>
+                    <div class="flex items-center justify-between py-2 border-b border-white/5"><div class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-slate-500"></span><span class="text-sm text-slate-200">Express.js</span></div><a href="https://expressjs.com/" target="_blank" rel="noreferrer" class="w-6 h-6 flex items-center justify-center rounded-md bg-[#111827] border border-white/5 text-slate-500 hover:border-blue-600/30 hover:text-blue-300 transition-all text-xs"><i class="ti ti-external-link"></i></a></div>
+                    <div class="flex items-center justify-between py-2 border-b border-white/5"><div class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-slate-500"></span><span class="text-sm text-slate-200">NestJS</span></div><a href="https://nestjs.com/" target="_blank" rel="noreferrer" class="w-6 h-6 flex items-center justify-center rounded-md bg-[#111827] border border-white/5 text-slate-500 hover:border-blue-600/30 hover:text-blue-300 transition-all text-xs"><i class="ti ti-external-link"></i></a></div>
+                    <div class="flex items-center justify-between pt-2"><div class="flex items-center gap-2"><span class="w-1 h-1 rounded-full bg-slate-500"></span><span class="text-sm text-slate-200">HTTP Toolkit</span></div><a href="https://httptoolkit.com/" target="_blank" rel="noreferrer" class="w-6 h-6 flex items-center justify-center rounded-md bg-[#111827] border border-white/5 text-slate-500 hover:border-blue-600/30 hover:text-blue-300 transition-all text-xs"><i class="ti ti-external-link"></i></a></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="h-px bg-white/5 mb-12"></div>
+
+        <!-- Portals -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-blue-600/10 border border-blue-600/25 text-blue-300 text-base shrink-0"><i class="ti ti-layout-grid"></i></div>
+                <div>
+                    <div class="text-base font-bold text-slate-100">بوابات وأنظمة المساهمة</div>
+                    <div class="text-xs text-slate-500 mt-0.5">أنظمة تفاعلية متكاملة للعمل الجماعي</div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2.5">
+                <a href="doc-viewer.html" class="flex items-center gap-3.5 bg-[#0d1220] border border-white/5 rounded-xl p-4 hover:border-blue-600/20 transition-colors no-underline">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-[#111827] border border-white/10 text-slate-400 text-lg shrink-0"><i class="ti ti-folder-open"></i></div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-sm mb-1 text-white">سجل المطورين وتوزيع المهام</div>
+                        <div class="text-xs text-slate-400 leading-relaxed">بوابة متكاملة لاستعراض الأعضاء، مهاراتهم، المهام المسندة والفرص التقنية المتاحة للمساهمة.</div>
+                    </div>
+                    <i class="ti ti-arrow-left text-base text-slate-500"></i>
+                </a>
+                <a href="tech-immersion.html" class="flex items-center gap-3.5 bg-[#0d1220] border border-white/5 rounded-xl p-4 hover:border-blue-600/20 transition-colors no-underline">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-[#111827] border border-white/10 text-slate-400 text-lg shrink-0"><i class="ti ti-map"></i></div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-sm mb-1 text-white">رحلة الانضمام والمجتمع</div>
+                        <div class="text-xs text-slate-400 leading-relaxed">تعرف على أهداف المنصة، انضم لمجموعات التواصل الفوري، وتابع لوحة المساهمين الفاعلين.</div>
+                    </div>
+                    <i class="ti ti-arrow-left text-base text-slate-500"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="h-px bg-white/5 mb-12"></div>
+
+        <!-- FAQs -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center bg-blue-600/10 border border-blue-600/25 text-blue-300 text-base shrink-0"><i class="ti ti-help"></i></div>
+                <div>
+                    <div class="text-base font-bold text-slate-100">الأسئلة الشائعة والمساعدة</div>
+                    <div class="text-xs text-slate-500 mt-0.5">إجابات سريعة للأسئلة المتكررة للبدء في المساهمة البرمجية</div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2" id="faq-container">
+                <!-- FAQs will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const faqs = [
+            { q: "كيف أبدأ في استلاف أول مهمة تطويرية لي؟", a: "يمكنك استعراض \"سجل المطورين وتوزيع المهام\" من لوحة التحكم، والاطلاع على الفرص والمشاريع الشاغرة، ثم التنسيق مع مشرف القسم لتعيين المهمة لك رسمياً." },
+            { q: "كيف يمكنني رفع التعديلات البرمجية التي قمت بها بأمان؟", a: "استخدم GitHub Desktop أو Terminal. أنشئ فرع (Branch) جديد يعبر عن تعديلك، أجرِ التعديلات وافحصها محلياً، ثم أرسل التغييرات (Push) وافتح Pull Request لمراجعتها ودمجها مع الفرع الرئيسي." },
+            { q: "أين أجد مستندات ومشاريع التوثيق للملفات التقنية؟", a: "تم توفير بوابة متكاملة تسمى \"نظام إدارة ملفات ومشاريع أثر التقنية\" تتيح لك تصفح الهيكل الشجري وقراءة ملفات التوثيق بنمط GitHub." },
+            { q: "كيف أقوم بتحديث معلوماتي البرمجية والمهارات المتاحة في الواجهة؟", a: "راجع \"خطوات الانضمام والمساهمة\" المتوفرة أعلاه، والتي تشرح طريقة تعديل سجل المطورين وإضافة مهاراتك ورسالتك التعبيرية بالتفصيل." },
+        ];
+
+        let isAuthenticated = false;
+
+        function scrollToLogin() {
+            document.getElementById('login-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function toggleAuth() {
+            const btn = document.getElementById('login-btn');
+            const btnText = document.getElementById('login-btn-text');
+            const heading = document.getElementById('login-heading');
+            const subheading = document.getElementById('login-subheading');
+            const resources = document.getElementById('resources-panel');
+
+            if (!isAuthenticated) {
+                // Show loading
+                btn.disabled = true;
+                btn.className = "font-bold text-sm py-2 px-5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 mx-auto md:mx-0 shrink-0 w-full md:w-auto bg-slate-300 text-black cursor-wait";
+                btnText.innerText = "جاري تسجيل الدخول...";
+                btn.querySelector('i').className = "ti ti-loader animate-spin text-lg";
+
+                setTimeout(() => {
+                    isAuthenticated = true;
+                    btn.disabled = false;
+                    btn.className = "font-bold text-sm py-2 px-5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 mx-auto md:mx-0 shrink-0 w-full md:w-auto bg-red-600/20 text-red-400 hover:bg-red-600/30 cursor-pointer";
+                    btnText.innerText = "تسجيل الخروج";
+                    btn.querySelector('i').className = "ti ti-logout text-lg";
+
+                    heading.innerText = "أهلاً بك مجدداً!";
+                    subheading.innerText = "أنت الآن مسجّل. استكشف الموارد المتاحة بالأسفل.";
+
+                    resources.classList.remove('hidden');
+                    document.getElementById('login-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 1500);
+            } else {
+                isAuthenticated = false;
+                btn.className = "font-bold text-sm py-2 px-5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 mx-auto md:mx-0 shrink-0 w-full md:w-auto bg-white text-black hover:bg-slate-200";
+                btnText.innerText = "تسجيل الدخول بواسطة GitHub";
+                btn.querySelector('i').className = "ti ti-brand-github text-lg";
+
+                heading.innerText = "هل أنت مستعد للمساهمة؟";
+                subheading.innerText = "سجّل دخولك بحساب GitHub للوصول لأدوات إضافية.";
+
+                resources.classList.add('hidden');
+            }
+        }
+
+        function simulateJoinRequest(btn) {
+            btn.disabled = true;
+            btn.className = "px-6 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg bg-slate-300 text-black cursor-wait w-full md:w-auto";
+            btn.innerHTML = `<i class="ti ti-loader animate-spin"></i><span>جاري إرسال الطلب...</span>`;
+            
+            setTimeout(() => {
+                btn.className = "px-6 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg bg-emerald-600 text-white w-full md:w-auto";
+                btn.innerHTML = `<i class="ti ti-check"></i><span>تم الانضمام بنجاح</span>`;
+            }, 1500);
+        }
+
+        // Render FAQs
+        const faqContainer = document.getElementById('faq-container');
+        faqContainer.innerHTML = faqs.map((faq, index) => `
+            <div class="bg-[#0d1220] border border-white/5 rounded-xl overflow-hidden transition-all" id="faq-item-${index}">
+                <div class="flex justify-between items-center p-4 cursor-pointer select-none gap-2.5" onclick="toggleFaq(${index})">
+                    <span class="text-sm font-semibold text-slate-100">${faq.q}</span>
+                    <i class="ti ti-chevron-down text-sm text-slate-500 shrink-0 transition-transform" id="faq-icon-${index}"></i>
+                </div>
+                <div class="transition-all duration-300 ease-in-out max-h-0 overflow-hidden" id="faq-body-${index}">
+                    <div class="text-xs text-slate-400 leading-relaxed p-4 pt-3 border-t border-white/5">
+                        ${faq.a}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        function toggleFaq(index) {
+            const body = document.getElementById(`faq-body-${index}`);
+            const icon = document.getElementById(`faq-icon-${index}`);
+            const item = document.getElementById(`faq-item-${index}`);
+
+            if (body.style.maxHeight === '0px' || body.style.maxHeight === '') {
+                body.style.maxHeight = '200px';
+                icon.classList.add('rotate-180', 'text-blue-300');
+                item.classList.add('border-white/10');
+            } else {
+                body.style.maxHeight = '0px';
+                icon.classList.remove('rotate-180', 'text-blue-300');
+                item.classList.remove('border-white/10');
+            }
+        }
+
+        // Initialize Lenis for smooth scrolling
+        const lenis = new Lenis();
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+    </script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافات محررات الأكواد - أثر</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="fonts/thmanyah-fonts.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Thmanyah Sans', 'Cairo', 'sans-serif'],
+                        serif: ['Thmanyah Serif Text', 'serif'],
+                        display: ['Thmanyah Serif Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Thmanyah Sans', 'Cairo', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Thmanyah Serif Display', 'Cairo', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.2);
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.4);
+        }
+    </style>
+</head>
+<body class="h-screen bg-white dark:bg-[#070b13] text-slate-700 dark:text-slate-200 font-sans p-6 md:p-12 relative overflow-hidden transition-colors duration-500">
+    <!-- Spotlight Effect follows mouse (simulated via static fallback or simple CSS) -->
+    <div id="spotlight" class="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition-opacity duration-300 dark:opacity-100" style="background: radial-gradient(350px circle at 50% 50%, rgba(147, 112, 219, 0.15), transparent 80%);"></div>
+
+    <!-- Background Glows -->
+    <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/10 dark:bg-blue-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+    <div class="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-indigo-600/10 dark:bg-indigo-600/10 blur-[100px] rounded-full pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        <!-- Navigation Back -->
+        <a href="developer-resources.html" class="mb-8 inline-flex items-center gap-2 text-slate-400 hover:text-blue-400 transition-colors group">
+            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+            <span>العودة لمركز موارد المطورين</span>
+        </a>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:h-[calc(100vh-150px)] lg:overflow-hidden">
+            <!-- Right Sticky Column -->
+            <aside class="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-24 h-fit">
+                <header class="mb-8">
+                    <div class="inline-flex items-center justify-center p-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl mb-4 text-blue-400">
+                        <i class="fa-solid fa-puzzle-piece fa-2x"></i>
+                    </div>
+                    <h1 class="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-2 tracking-tight leading-tight">
+                        إضافات <span class="text-transparent bg-clip-text bg-gradient-to-l from-blue-400 to-indigo-500">محررات الأكواد</span>
+                    </h1>
+                    <p class="text-md text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed mt-3">
+                        مجموعة من الإضافات الأساسية والمفيدة لـ Antigravity و VS Code لرفع إنتاجيتك وتحسين تجربة كتابة الأكواد.
+                    </p>
+                </header>
+                <div class="bg-slate-100/50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 rounded-3xl p-5 flex flex-col gap-4 backdrop-blur-md">
+                    <div class="flex items-start gap-3">
+                        <div class="text-blue-400 shrink-0 pt-1">
+                            <i class="fa-solid fa-info-circle fa-lg"></i>
+                        </div>
+                        <div class="text-sm text-slate-600 dark:text-slate-300">
+                            <strong>نصيحة سريعة:</strong> يمكنك تثبيت أي إضافة بنسخ أمر التثبيت (لـ VS Code) ولصقه مباشرة في terminal جهازك.
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-500 dark:text-slate-500 border-t border-slate-200 dark:border-slate-800 pt-3">
+                        أو انسخ معرف الإضافة (ID) وابحث عنه داخل قسم الإضافات في المحرر (اختصار <code class="bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded">Ctrl+Shift+X</code>).
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Left Column -->
+            <div class="lg:col-span-7 xl:col-span-8 flex flex-col lg:h-[calc(100vh-200px)]">
+                <!-- Controls Section -->
+                <div class="mb-10 space-y-8">
+                    <!-- Search Input -->
+                    <div class="relative">
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500">
+                            <i class="fa-solid fa-search fa-lg"></i>
+                        </span>
+                        <input
+                            id="search-input"
+                            type="text"
+                            placeholder="ابحث عن إضافة بالاسم، الوصف، أو الـ ID..."
+                            class="w-full pr-12 pl-4 py-4 bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-all backdrop-blur-sm"
+                        />
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-500 dark:text-slate-400">فلترة حسب الفئة:</span>
+                            <div id="category-filters" class="flex flex-wrap gap-2">
+                                <!-- Categories dynamically loaded -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Extensions List -->
+                <main id="extensions-container" class="flex-1 overflow-y-auto pr-2 -mr-2 custom-scrollbar">
+                    <!-- Cards will be populated here -->
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const vscodeExtensions = [
+            { 
+                id: "dsznajder.es7-react-js-snippets",
+                name: "ES7+ React/Redux Snippets", 
+                description: "اختصارات برمجية سريعة لـ React و Redux و React Native لتسريع وتيرة كتابة الكود بشكل ملحوظ.", 
+                link: "https://marketplace.visualstudio.com/items?itemName=dsznajder.es7-react-js-snippets",
+                editors: ['vscode', 'antigravity'],
+                category: "productivity",
+                categoryAr: "إنتاجية واختصارات"
+            },
+            { 
+                id: "bradlc.vscode-tailwindcss",
+                name: "Tailwind CSS IntelliSense", 
+                description: "إكمال تلقائي ذكي وتلميحات ممتازة لأسماء كلاسات إطار العمل Tailwind CSS مع عرض الألوان والخصائص مباشرة.", 
+                link: "https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss",
+                editors: ['vscode', 'antigravity'],
+                category: "styling",
+                categoryAr: "تنسيق وتصميم"
+            },
+            { 
+                id: "esbenp.prettier-vscode",
+                name: "Prettier - Code formatter", 
+                description: "تنسيق كودك وترتيبه تلقائياً عند الحفظ لضمان أسلوب كتابة متسق ونظيف بين جميع أفراد الفريق.", 
+                link: "https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode",
+                editors: ['vscode', 'antigravity'],
+                category: "formatting",
+                categoryAr: "تنسيق وترتيب"
+            },
+            { 
+                id: "dbaeumer.vscode-eslint",
+                name: "ESLint", 
+                description: "اكتشاف الأخطاء البرمجية وتطبيق معايير كتابة الكود المحددة تلقائياً لتجنب المشاكل قبل التشغيل.", 
+                link: "https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint",
+                editors: ['vscode', 'antigravity'],
+                category: "linting",
+                categoryAr: "جودة الكود"
+            },
+            { 
+                id: "formulahendry.auto-close-tag",
+                name: "Auto Close Tag", 
+                description: "إغلاق وسوم HTML و JSX تلقائياً بمجرد كتابة وسم البداية، مما يوفر الوقت ويمنع أخطاء نسيان الوسوم.", 
+                link: "https://marketplace.visualstudio.com/items?itemName=formulahendry.auto-close-tag",
+                editors: ['vscode', 'antigravity'],
+                category: "productivity",
+                categoryAr: "إنتاجية واختصارات"
+            },
+            { 
+                id: "zhuangtongfa.Material-Theme",
+                name: "One Dark Pro", 
+                description: "واحد من أشهر وأجمل الثيمات الداكنة لـ VS Code، مريح جداً للعين أثناء جلسات البرمجة الطويلة.", 
+                link: "https://marketplace.visualstudio.com/items?itemName=zhuangtongfa.Material-Theme",
+                editors: ['vscode', 'antigravity'],
+                category: "theme",
+                categoryAr: "مظهر وأيقونات"
+            },
+            { 
+                id: "PKief.material-icon-theme",
+                name: "Material Icon Theme", 
+                description: "مجموعة ضخمة من الأيقونات الحديثة والجميلة للمجلدات والملفات تسهل عليك تحديد نوع الملف بنظرة سريعة.", 
+                link: "https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme",
+                editors: ['vscode', 'antigravity'],
+                category: "theme",
+                categoryAr: "مظهر وأيقونات"
+            }
+        ];
+
+        const categories = [
+            { id: 'all', name: 'الكل' },
+            { id: 'productivity', name: 'إنتاجية واختصارات' },
+            { id: 'styling', name: 'تنسيق وتصميم' },
+            { id: 'formatting', name: 'تنسيق وترتيب' },
+            { id: 'linting', name: 'جودة الكود' },
+            { id: 'theme', name: 'مظهر وأيقونات' },
+        ];
+
+        let activeCategory = 'all';
+        let searchTerm = '';
+
+        // Spotlight mouse tracker
+        window.addEventListener('mousemove', (e) => {
+            const spotlight = document.getElementById('spotlight');
+            spotlight.style.background = `radial-gradient(350px circle at ${e.clientX}px ${e.clientY}px, rgba(147, 112, 219, 0.15), transparent 80%)`;
+        });
+
+        function renderCategories() {
+            const container = document.getElementById('category-filters');
+            container.innerHTML = categories.map(cat => `
+                <button 
+                    onclick="setCategory('${cat.id}')"
+                    class="px-3 py-1 rounded-lg text-xs font-semibold transition-all duration-300 border ${
+                        activeCategory === cat.id
+                            ? 'bg-blue-600 border-blue-500 text-white'
+                            : 'bg-slate-100/50 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400'
+                    }"
+                >
+                    ${cat.name}
+                </button>
+            `).join('');
+        }
+
+        function renderExtensions() {
+            const container = document.getElementById('extensions-container');
+            const filtered = vscodeExtensions.filter(ext => {
+                const matchesCategory = activeCategory === 'all' || ext.category === activeCategory;
+                const matchesSearch = ext.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                                      ext.description.includes(searchTerm) || 
+                                      ext.id.toLowerCase().includes(searchTerm.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length > 0) {
+                container.innerHTML = `<div class="space-y-4">` + filtered.map(ext => `
+                    <div class="bg-white/50 dark:bg-slate-900/30 p-5 rounded-2xl hover:bg-slate-200/50 dark:hover:bg-slate-800/40 transition-all duration-300 group backdrop-blur-md relative flex flex-col sm:flex-row sm:items-center gap-5">
+                        <div class="flex-grow">
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="text-[11px] font-bold px-3 py-1 bg-slate-800/80 border border-slate-700/50 rounded-full text-blue-400">
+                                    ${ext.categoryAr} 
+                                </span>
+                                <a href="${ext.link}" target="_blank" rel="noopener noreferrer" class="text-slate-500 hover:text-blue-400 transition-colors sm:hidden" title="فتح في المتجر الرسمي">
+                                    <i class="fa-solid fa-external-link-alt fa-sm"></i>
+                                </a>
+                            </div>
+                            
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-blue-400 transition-colors mb-1">
+                                ${ext.name}
+                            </h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                                ${ext.description}
+                            </p>
+                        </div>
+
+                        <div class="flex-shrink-0 sm:w-64 flex flex-col sm:flex-row-reverse gap-2 mt-4 sm:mt-0 border-t sm:border-t-0 sm:border-r border-slate-200 dark:border-slate-800/60 pt-4 sm:pt-0 sm:pr-5">
+                            <div class="flex-grow space-y-2">
+                                ${ext.editors.includes('vscode') ? `
+                                    <a href="vscode:extension/${ext.id}" class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 border border-blue-500/20">
+                                        <i class="fa-solid fa-code"></i>
+                                        <span>تثبيت في VS Code</span>
+                                    </a>
+                                ` : ''}
+                                ${ext.editors.includes('antigravity') ? `
+                                    <a href="antigravity:extension/${ext.id}" class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all bg-purple-600/10 hover:bg-purple-600/20 text-purple-400 border border-purple-500/20">
+                                        <i class="fa-solid fa-rocket"></i>
+                                        <span>تثبيت في Antigravity</span>
+                                    </a>
+                                ` : ''}
+                            </div>
+                            <div class="flex-shrink-0">
+                                <button onclick="copyId(this, '${ext.id}')" title="نسخ معرف الإضافة (ID)" class="w-full sm:w-auto h-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all bg-slate-200/60 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700/70">
+                                    <i class="fa-solid fa-copy"></i>
+                                    <span class="sm:hidden">نسخ الـ ID</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('') + `</div>`;
+            } else {
+                container.innerHTML = `
+                    <div class="text-center py-16 bg-slate-100/50 dark:bg-slate-900/20 border border-slate-200 dark:border-slate-800/60 rounded-[2rem] backdrop-blur-md">
+                        <div class="text-slate-500 mb-4">
+                            <i class="fa-solid fa-info-circle fa-3x"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">لم نعثر على أي نتائج</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm">جرّب استخدام كلمات مفتاحية أخرى أو تغيير التصنيف المختار.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function setCategory(id) {
+            activeCategory = id;
+            renderCategories();
+            renderExtensions();
+        }
+
+        function copyId(btn, id) {
+            navigator.clipboard.writeText(id).then(() => {
+                const icon = btn.querySelector('i');
+                const textSpan = btn.querySelector('span');
+                icon.className = 'fa-solid fa-check text-emerald-400';
+                if (textSpan) textSpan.innerText = 'تم نسخ الـ ID';
+                btn.classList.add('bg-emerald-500/20', 'text-emerald-400');
+                
+                setTimeout(() => {
+                    icon.className = 'fa-solid fa-copy';
+                    if (textSpan) textSpan.innerText = 'نسخ الـ ID';
+                    btn.classList.remove('bg-emerald-500/20', 'text-emerald-400');
+                }, 2000);
+            });
+        }
+
+        // Setup search input listener
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            renderExtensions();
+        });
+
+        // Initial render
+        renderCategories();
+        renderExtensions();
+
+        // Initialize Lenis for smooth scrolling
+        const lenis = new Lenis();
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+    </script>
+</body>
+</html>
